@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <title>Re:direct</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3b82f6" id="themeColor">
+    <meta name="theme-color" content="#009380" id="themeColor">
     <style>
         :root {
             --primary-color: #009380;
             --primary-hover: #89c4c0;
-            --background: #ffffff;
-            --surface: #f8fafc;
-            --border: #e2e8f0;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --background: #161616;
+            --surface: #002e2c;
+            --border: rgba(0, 147, 128, 0.3);
+            --text-primary: #89c4c0;
+            --text-secondary: #009380;
+            --text-muted: #009380;
+            --shadow: 0 0 8px rgba(0, 147, 128, 0.3);
+            --shadow-lg: 0 0 15px rgba(0, 147, 128, 0.5);
             --radius: 0.5rem;
         }
 
         .dark-theme {
             --background: #161616;
             --surface: #002e2c;
-            --border: #004d47;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #89c4c0;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --border: rgba(0, 147, 128, 0.3);
+            --text-primary: #89c4c0;
+            --text-secondary: #009380;
+            --text-muted: #009380;
+            --shadow: 0 0 8px rgba(0, 147, 128, 0.3);
+            --shadow-lg: 0 0 15px rgba(0, 147, 128, 0.5);
         }
 
 
@@ -83,12 +83,12 @@
 
         .btn {
             padding: 8px 16px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 147, 128, 0.5);
             border-radius: var(--radius);
-            background: var(--surface);
+            background: transparent;
             color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-size: 14px;
             text-decoration: none;
             display: inline-flex;
@@ -96,21 +96,26 @@
             justify-content: center;
             gap: 8px;
             white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
         }
 
         .btn:hover {
-            background: var(--border);
+            background: var(--primary-color);
+            color: #161616;
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.7);
         }
 
         .btn-primary {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            background: rgba(0, 147, 128, 0.2);
+            color: var(--text-primary);
+            border-color: rgba(0, 147, 128, 0.5);
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
-            border-color: var(--primary-hover);
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #161616;
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.8);
         }
 
         .btn-icon {
@@ -129,15 +134,20 @@
 
         .card {
             background: var(--surface);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 147, 128, 0.3);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
             overflow: hidden;
             padding: 24px;
             text-align: center;
             max-width: 480px;
             width: 100%;
             margin: auto;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.5);
         }
 
         .app-header {
@@ -235,10 +245,11 @@
 
         .modal-content {
             background: var(--surface);
+            border: 1px solid rgba(0, 147, 128, 0.3);
             border-radius: var(--radius);
             max-width: 400px;
             width: 100%;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 0 20px rgba(0, 147, 128, 0.5);
         }
 
         .modal-header {

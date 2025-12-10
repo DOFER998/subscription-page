@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"/>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#3b82f6" id="themeColor">
+    <meta name="theme-color" content="#009380" id="themeColor">
     <meta name="description" content="<%= metaDescription %>"/>
     <title><%= metaTitle %></title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -22,33 +22,33 @@
         :root {
             --primary-color: #009380;
             --primary-hover: #89c4c0;
-            --background: #ffffff;
-            --surface: #f8fafc;
-            --border: #e2e8f0;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
+            --background: #161616;
+            --surface: #002e2c;
+            --border: rgba(0, 147, 128, 0.3);
+            --text-primary: #89c4c0;
+            --text-secondary: #009380;
+            --text-muted: #009380;
+            --success: #009380;
+            --warning: #f39c12;
+            --error: #e74c3c;
             --info: #009380;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow: 0 0 8px rgba(0, 147, 128, 0.3);
+            --shadow-lg: 0 0 15px rgba(0, 147, 128, 0.5);
             --radius: 0.5rem;
         }
 
         .dark-theme {
             --background: #161616;
             --surface: #002e2c;
-            --border: #004d47;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #89c4c0;
+            --border: rgba(0, 147, 128, 0.3);
+            --text-primary: #89c4c0;
+            --text-secondary: #009380;
+            --text-muted: #009380;
             --primary-color: #009380;
             --primary-hover: #89c4c0;
             --info: #009380;
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --shadow: 0 0 8px rgba(0, 147, 128, 0.3);
+            --shadow-lg: 0 0 15px rgba(0, 147, 128, 0.5);
         }
 
         * {
@@ -95,33 +95,39 @@
 
         .btn {
             padding: 8px 16px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 147, 128, 0.5);
             border-radius: var(--radius);
-            background: var(--surface);
+            background: transparent;
             color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-size: 14px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
         }
 
         .btn:hover {
-            background: var(--border);
+            background: var(--primary-color);
+            color: #161616;
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.7);
+            text-shadow: none;
         }
 
         .btn-primary {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            background: rgba(0, 147, 128, 0.2);
+            color: var(--text-primary);
+            border-color: rgba(0, 147, 128, 0.5);
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
-            border-color: var(--primary-hover);
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #161616;
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.8);
         }
 
         .btn-sm {
@@ -137,10 +143,15 @@
 
         .card {
             background: var(--surface);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 147, 128, 0.3);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
             overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.5);
         }
 
         .card-header {
@@ -196,23 +207,27 @@
         }
 
         .badge-active {
-            background: #dcfce7;
-            color: #166534;
+            background: rgba(0, 147, 128, 0.2);
+            color: #89c4c0;
+            border: 1px solid rgba(0, 147, 128, 0.5);
         }
 
         .badge-disabled, .badge-limited, .badge-expired {
-            background: #fee2e2;
-            color: #991b1b;
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.5);
         }
 
         .dark-theme .badge-active {
-            background: #14532d;
-            color: #bbf7d0;
+            background: rgba(0, 147, 128, 0.2);
+            color: #89c4c0;
+            border: 1px solid rgba(0, 147, 128, 0.5);
         }
 
         .dark-theme .badge-disabled, .dark-theme .badge-limited, .dark-theme .badge-expired {
-            background: #7f1d1d;
-            color: #fecaca;
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.5);
         }
 
         .links-section {
@@ -280,7 +295,12 @@
 
         .platform-tab.active {
             background: var(--primary-color);
-            color: white;
+            color: #161616;
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.5);
+        }
+
+        .platform-tab:hover:not(.active) {
+            background: rgba(0, 147, 128, 0.2);
         }
 
         #platform-selector-btn {
@@ -319,7 +339,8 @@
         }
 
         .spoiler-header:hover {
-            background: var(--border);
+            background: rgba(0, 147, 128, 0.2);
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
         }
 
         .spoiler-content {
@@ -354,23 +375,24 @@
 
         .app-card {
             background: var(--surface);
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 147, 128, 0.3);
             border-radius: var(--radius);
             padding: 20px;
             position: relative;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 0 8px rgba(0, 147, 128, 0.3);
         }
 
         .app-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-lg);
+            border-color: rgba(0, 147, 128, 0.6);
+            box-shadow: 0 0 15px rgba(0, 147, 128, 0.6);
         }
 
         .app-card.featured {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, var(--surface) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-color: rgba(0, 147, 128, 0.5);
+            background: linear-gradient(135deg, var(--surface) 0%, rgba(0, 147, 128, 0.1) 100%);
         }
 
         .app-header {
@@ -430,12 +452,13 @@
 
         .modal-content {
             background: var(--surface);
+            border: 1px solid rgba(0, 147, 128, 0.3);
             border-radius: var(--radius);
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 0 20px rgba(0, 147, 128, 0.5);
         }
 
         .modal-header {
@@ -471,7 +494,7 @@
         }
 
         .modal-close:hover {
-            background: var(--border);
+            background: rgba(0, 147, 128, 0.2);
         }
 
         .modal-body {
@@ -603,7 +626,8 @@
         }
 
         .platform-modal-item:hover {
-            background-color: var(--border);
+            background: rgba(0, 147, 128, 0.2);
+            box-shadow: 0 0 10px rgba(0, 147, 128, 0.3);
         }
 
 
@@ -1204,7 +1228,7 @@
             isDark = theme === 'dark';
         }
         html.classList.toggle('dark-theme', isDark);
-        themeColorMeta.setAttribute('content', isDark ? '#0f172a' : '#3b82f6');
+        themeColorMeta.setAttribute('content', isDark ? '#002e2c' : '#009380');
     }
 
     function setLanguage(lang) {
@@ -1405,7 +1429,6 @@
         // Создаем объект с данными для передачи в renderStep
         const stepData = {
             subscriptionUrl: response.subscriptionUrl,
-            cryptoLink: response.happ?.cryptoLink || response.cryptoLink // Используем happ.cryptoLink для приложения happ
         };
 
         let stepsHtml = '';
@@ -1542,43 +1565,28 @@
             const isInTelegram = window.Telegram?.WebApp?.initData;
 
             // Базовая redirect ссылка используется ТОЛЬКО в Telegram WebApp
-            const REDIRECT_BASE = 'https:///legiz-ru.github.io/Orion/redirect-page/?redirect_to=';
+            const REDIRECT_BASE = 'https://dofer998.github.io/subscription-page/redirect-page/?redirect_to=';
 
-            if (app.id === 'happ') {
-                // Для приложения happ используем cryptoLink из panelData.response.happ
-                const happCryptoLink = panelData?.response?.happ?.cryptoLink;
-                if (happCryptoLink) {
-                    if (isInTelegram) {
-                        // В Telegram используем redirect
-                        const redirectPrefix = (app.redirectLink && app.redirectLink.trim() !== "")
-                            ? app.redirectLink
-                            : REDIRECT_BASE;
-                        finalUrl = redirectPrefix + encodeURIComponent(happCryptoLink);
-                    } else {
-                        // Вне Telegram используем прямую ссылку
-                        finalUrl = happCryptoLink;
-                    }
+            // Для всех приложений (без отдельной логики для happ)
+            if (app.urlScheme && data.subscriptionUrl) {
+                let subscriptionPart = data.subscriptionUrl;
+
+                // При необходимости кодируем подписку в base64
+                if (app.isNeedBase64Encoding) {
+                    subscriptionPart = btoa(subscriptionPart);
                 }
-            } else {
-                // Для других приложений
-                if (app.urlScheme && data.subscriptionUrl) {
-                    let subscriptionPart = data.subscriptionUrl;
-                    if (app.isNeedBase64Encoding) {
-                        subscriptionPart = btoa(subscriptionPart);
-                    }
 
-                    const appUrl = app.urlScheme + subscriptionPart;
+                const appUrl = app.urlScheme + subscriptionPart;
 
-                    if (isInTelegram) {
-                        // В Telegram используем redirect
-                        const redirectPrefix = (app.redirectLink && app.redirectLink.trim() !== "")
-                            ? app.redirectLink
-                            : REDIRECT_BASE;
-                        finalUrl = redirectPrefix + encodeURIComponent(appUrl);
-                    } else {
-                        // Вне Telegram используем прямую ссылку
-                        finalUrl = appUrl;
-                    }
+                if (isInTelegram) {
+                    // В Telegram используем redirect
+                    const redirectPrefix = (app.redirectLink && app.redirectLink.trim() !== "")
+                        ? app.redirectLink
+                        : REDIRECT_BASE;
+                    finalUrl = redirectPrefix + encodeURIComponent(appUrl);
+                } else {
+                    // Вне Telegram используем прямую ссылку
+                    finalUrl = appUrl;
                 }
             }
 
@@ -1648,9 +1656,8 @@
 
     function getSubscriptionLinkForApp(app) {
         const {response} = panelData || {};
-        const redirect_link = 'https://legiz-ru.github.io/Orion/redirect-page/?redirect_to=';
+        const redirect_link = 'https://dofer998.github.io/subscription-page/redirect-page/?redirect_to=';
         if (!response) return '#';
-        if (app.id.toLowerCase() === 'happ' && response.happ?.cryptoLink) return redirect_link + response.happ.cryptoLink;
         if (!app.urlScheme || !response.subscriptionUrl) return '#';
         let url = response.subscriptionUrl;
         if (app.isNeedBase64Encoding) try {
@@ -1904,12 +1911,6 @@
 
     function formatDate(d) {
         return new Date(d).toLocaleDateString(currentLanguage === 'ru' ? 'ru-RU' : currentLanguage === 'fa' ? 'fa-IR' : 'en-GB');
-    }
-
-    function escapeHtml(s) {
-        const d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
     }
 
     document.addEventListener('click', e => {
