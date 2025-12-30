@@ -1262,6 +1262,9 @@ body {
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.expand(); // Раскрыть на весь экран
                 window.Telegram.WebApp.enableClosingConfirmation(); // Подтверждение при закрытии
+
+                // Устанавливаем цвета Telegram интерфейса в цвета сайта
+                applyTelegramColors();
             }
 
             // Добавляем HapticFeedback на все кнопки в Telegram
@@ -1575,6 +1578,29 @@ body {
             }
             html.classList.toggle('dark-theme', isDark);
             themeColorMeta.setAttribute('content', isDark ? '#0f172a' : '#009380');
+
+            // Обновляем цвета Telegram интерфейса
+            applyTelegramColors(isDark);
+        }
+
+        function applyTelegramColors(isDark) {
+            const tg = window.Telegram?.WebApp;
+            if (!tg) return;
+
+            // Цвета сайта для Telegram интерфейса
+            const headerColor = '#0a0f0f';      // Тёмный фон для заголовка
+            const bgColor = '#0a0f0f';          // Основной фон
+            const bottomBarColor = '#0a0f0f';   // Нижняя панель
+
+            try {
+                tg.setHeaderColor(headerColor);
+                tg.setBackgroundColor(bgColor);
+                if (tg.setBottomBarColor) {
+                    tg.setBottomBarColor(bottomBarColor);
+                }
+            } catch (e) {
+                console.warn('Failed to set Telegram colors:', e);
+            }
         }
 
         function isNewYearSeason() {
@@ -2182,13 +2208,11 @@ body {
             block.buttons.forEach(button => {
                 const buttonText = getLocalizedText(button.text);
                 const buttonIcon = getSvgIcon(button.svgIconKey, 'w-4 h-4');
-                let buttonLink = button.link;
+                let buttonLink = button.link || '';
 
+                // Support for template variables in ALL button types
                 if (buttonLink && response) {
-                    // Support for template variables
                     if (response.subscriptionUrl) {
-                        buttonLink = buttonLink.replace('{SUBSCRIPTION_URL}', response.subscriptionUrl);
-                        buttonLink = buttonLink.replace('{SUBSCRIPTION_URL_B64}', btoa(response.subscriptionUrl));
                         buttonLink = buttonLink.replace(/\{\{SUBSCRIPTION_LINK\}\}/g, encodeURIComponent(response.subscriptionUrl));
                     }
                     if (response.user?.username) {
@@ -2196,16 +2220,17 @@ body {
                     }
                 }
 
-                const buttonType = button.type || 'link';
+                const buttonType = button.type || 'external';
 
-                if (buttonType === 'subscription') {
+                if (buttonType === 'subscriptionLink' || buttonType === 'subscription') {
                     const subscriptionUrl = generateSubscriptionUrl(app, response?.subscriptionUrl, button.link);
                     if (subscriptionUrl) {
                         html += `<button class="btn btn-primary" ${colorStyle} onclick="openSubscriptionUrl('${escapeForAttribute(subscriptionUrl)}')">${buttonIcon} ${buttonText}</button>`;
                     }
-                } else if (buttonType === 'copy') {
-                    html += `<button class="btn" onclick="copyToClipboard('${escapeForAttribute(buttonLink)}')">${buttonIcon} ${buttonText}</button>`;
+                } else if (buttonType === 'copyButton' || buttonType === 'copy') {
+                    html += `<button class="btn btn-primary" ${colorStyle} onclick="copyToClipboard('${escapeForAttribute(buttonLink)}')">${buttonIcon} ${buttonText}</button>`;
                 } else {
+                    // external and any other type - open link
                     html += `<button class="btn btn-primary" ${colorStyle} onclick="openLink('${escapeForAttribute(buttonLink)}')">${buttonIcon} ${buttonText}</button>`;
                 }
             });
@@ -2217,10 +2242,7 @@ body {
             if (!subscriptionUrl) return null;
             if (linkTemplate) {
                 let result = linkTemplate
-                    .replace('{SUBSCRIPTION_URL}', subscriptionUrl)
-                    .replace('{SUBSCRIPTION_URL_B64}', btoa(subscriptionUrl))
                     .replace(/\{\{SUBSCRIPTION_LINK\}\}/g, encodeURIComponent(subscriptionUrl));
-                // Support {{USERNAME}} variable
                 const username = panelData?.response?.user?.username;
                 if (username) {
                     result = result.replace(/\{\{USERNAME\}\}/g, encodeURIComponent(username));
