@@ -898,6 +898,106 @@ body {
     transform: translateX(4px);
 }
 
+/* Bottom Sheet */
+.bottom-sheet-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.bottom-sheet-backdrop.active {
+    display: block;
+    opacity: 1;
+}
+.bottom-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 46, 44, 0.98) 0%, rgba(0, 30, 28, 0.99) 100%);
+    border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    z-index: 1001;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 70vh;
+    overflow: hidden;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3), var(--glow);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.bottom-sheet.active {
+    transform: translateY(0);
+}
+.bottom-sheet.dragging {
+    transition: none;
+}
+.bottom-sheet-handle {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    cursor: grab;
+}
+.bottom-sheet-handle:active {
+    cursor: grabbing;
+}
+.bottom-sheet-handle-bar {
+    width: 36px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    transition: background 0.2s ease;
+}
+.bottom-sheet-handle:hover .bottom-sheet-handle-bar {
+    background: var(--text-secondary);
+}
+.bottom-sheet-body {
+    padding: 4px 20px 20px;
+    overflow-y: auto;
+    max-height: calc(70vh - 40px);
+    -webkit-overflow-scrolling: touch;
+}
+.bottom-sheet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.bottom-sheet-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(0, 46, 44, 0.3);
+    font-size: 16px;
+    color: var(--text-primary);
+    -webkit-tap-highlight-color: transparent;
+}
+.bottom-sheet-item:active {
+    transform: scale(0.98);
+    background: rgba(0, 147, 128, 0.2);
+}
+.bottom-sheet-item.selected {
+    background: linear-gradient(135deg, rgba(0, 147, 128, 0.25) 0%, rgba(0, 147, 128, 0.15) 100%);
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow);
+}
+.bottom-sheet-item svg {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
 /* Settings Modal */
 .settings-section { margin-bottom: 24px; }
 .settings-section:last-child { margin-bottom: 0; }
@@ -1220,15 +1320,13 @@ body {
         </div>
     </div>
 
-    <!-- Platform Modal -->
-    <div class="modal" id="platformModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="platformModalTitle">Select Platform</div>
-                <button class="modal-close" onclick="closeModal('platformModal')">&times;</button>
-            </div>
-            <div class="modal-body" id="platformModalBody"></div>
+    <!-- Platform Bottom Sheet -->
+    <div class="bottom-sheet-backdrop" id="platformSheetBackdrop" onclick="closePlatformSheet()"></div>
+    <div class="bottom-sheet" id="platformSheet">
+        <div class="bottom-sheet-handle" id="platformSheetHandle">
+            <div class="bottom-sheet-handle-bar"></div>
         </div>
+        <div class="bottom-sheet-body" id="platformSheetBody"></div>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -1270,7 +1368,7 @@ body {
             // Добавляем HapticFeedback на все кнопки в Telegram
             if (window.Telegram?.WebApp?.HapticFeedback) {
                 document.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.btn, .platform-tab, .app-tab, .app-card, .toggle-switch, .modal-close');
+                    const btn = e.target.closest('.btn, .platform-tab, .app-tab, .app-card, .toggle-switch, .modal-close, .bottom-sheet-item');
                     if (btn) {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                     }
@@ -2482,28 +2580,122 @@ body {
             openModal('appModal');
         }
 
+        // Bottom Sheet для выбора платформы
+        let sheetDragState = { startY: 0, currentY: 0, isDragging: false };
+
         function openPlatformModal() {
-            const modalBody = document.getElementById('platformModalBody');
-            modalBody.innerHTML = `
-                <div class="platform-modal-list">
+            openPlatformSheet();
+        }
+
+        function openPlatformSheet() {
+            const sheet = document.getElementById('platformSheet');
+            const backdrop = document.getElementById('platformSheetBackdrop');
+            const body = document.getElementById('platformSheetBody');
+
+            body.innerHTML = `
+                <div class="bottom-sheet-list">
                     ${validPlatforms.map(p => {
                         const pData = appConfig.platforms[p];
                         const pName = getLocalizedText(pData?.displayName) || p;
                         const pIcon = getSvgIcon(pData?.svgIconKey) || '';
-                        return `<div class="platform-modal-item" data-platform="${p}">${pIcon} <span>${pName}</span></div>`;
+                        const isSelected = p === currentPlatform ? 'selected' : '';
+                        return `<div class="bottom-sheet-item ${isSelected}" data-platform="${p}">${pIcon} <span>${pName}</span></div>`;
                     }).join('')}
                 </div>
             `;
 
-            modalBody.querySelectorAll('.platform-modal-item').forEach(item => {
+            body.querySelectorAll('.bottom-sheet-item').forEach(item => {
                 item.addEventListener('click', (e) => {
                     const platform = e.currentTarget.dataset.platform;
+                    if (window.Telegram?.WebApp?.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.selectionChanged();
+                    }
                     switchPlatform(platform);
-                    closeModal('platformModal');
+                    closePlatformSheet();
                 });
             });
 
-            openModal('platformModal');
+            // Показываем sheet
+            backdrop.classList.add('active');
+            requestAnimationFrame(() => {
+                sheet.classList.add('active');
+            });
+
+            // Блокируем скролл body
+            document.body.style.overflow = 'hidden';
+
+            // Инициализируем свайп
+            initSheetDrag();
+
+            if (window.Telegram?.WebApp?.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function closePlatformSheet() {
+            const sheet = document.getElementById('platformSheet');
+            const backdrop = document.getElementById('platformSheetBackdrop');
+
+            sheet.classList.remove('active');
+            sheet.style.transform = '';
+
+            setTimeout(() => {
+                backdrop.classList.remove('active');
+            }, 300);
+
+            document.body.style.overflow = '';
+        }
+
+        function initSheetDrag() {
+            const sheet = document.getElementById('platformSheet');
+            const handle = document.getElementById('platformSheetHandle');
+
+            const onStart = (e) => {
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                sheetDragState.startY = clientY;
+                sheetDragState.isDragging = true;
+                sheet.classList.add('dragging');
+            };
+
+            const onMove = (e) => {
+                if (!sheetDragState.isDragging) return;
+
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const deltaY = clientY - sheetDragState.startY;
+
+                if (deltaY > 0) {
+                    sheet.style.transform = `translateY(${deltaY}px)`;
+                }
+            };
+
+            const onEnd = (e) => {
+                if (!sheetDragState.isDragging) return;
+
+                const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+                const deltaY = clientY - sheetDragState.startY;
+
+                sheetDragState.isDragging = false;
+                sheet.classList.remove('dragging');
+
+                if (deltaY > 100) {
+                    closePlatformSheet();
+                    if (window.Telegram?.WebApp?.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                    }
+                } else {
+                    sheet.style.transform = '';
+                }
+            };
+
+            // Touch events
+            handle.addEventListener('touchstart', onStart, { passive: true });
+            document.addEventListener('touchmove', onMove, { passive: true });
+            document.addEventListener('touchend', onEnd, { passive: true });
+
+            // Mouse events для десктопа
+            handle.addEventListener('mousedown', onStart);
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
         }
 
         function checkTabsOverflow() {
